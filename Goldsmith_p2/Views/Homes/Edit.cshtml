@@ -1,0 +1,128 @@
+﻿@model Goldsmith_p2.Models.Customerss
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+<h2>Edit</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Customerss</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.id)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Phone_Number, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Phone_Number, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Phone_Number, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Gold_in_grams, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Gold_in_grams, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Gold_in_grams, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Total_amount, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Total_amount, new { htmlAttributes = new { @class = "form-control", @id = "TotalAmount" } })
+                @Html.ValidationMessageFor(model => model.Total_amount, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Advance_amount, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Advance_amount, new { htmlAttributes = new { @class = "form-control", @id = "AdvanceAmount" } })
+                @Html.ValidationMessageFor(model => model.Advance_amount, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Balance_amount, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Balance_amount, new { htmlAttributes = new { @class = "form-control", @id = "BalanceAmount", @readonly = "readonly" } })
+                @Html.ValidationMessageFor(model => model.Balance_amount, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Date, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Date, new { htmlAttributes = new { @class = "form-control", @id = "datepicker" } })
+                @Html.ValidationMessageFor(model => model.Date, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="newAdvanceAmount" class="control-label col-md-2">Add Advance Amount</label>
+            <div class="col-md-10">
+                <input type="number" id="newAdvanceAmount" class="form-control" placeholder="Enter additional amount" />
+                <button type="button" class="btn btn-primary" onclick="addAdvanceAmount()">Add Amount</button>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        function calculateBalance() {
+            var total = parseFloat(document.getElementById('TotalAmount').value) || 0;
+            var advance = parseFloat(document.getElementById('AdvanceAmount').value) || 0;
+            var balance = total - advance;
+            document.getElementById('BalanceAmount').value = balance;
+        }
+
+        function addAdvanceAmount() {
+            var newAmount = parseFloat(document.getElementById('newAdvanceAmount').value) || 0;
+            var advanceInput = document.getElementById('AdvanceAmount');
+            var existingAmount = parseFloat(advanceInput.value) || 0;
+            var newTotalAmount = existingAmount + newAmount;
+            advanceInput.value = newTotalAmount;
+            calculateBalance();
+        }
+
+        $(document).ready(function () {
+            $('#TotalAmount, #AdvanceAmount').on('input', function () {
+                calculateBalance();
+            });
+
+            $('#datepicker').datepicker({
+                format: 'yyyy-mm-dd',
+                autoclose: true,
+                todayHighlight: true
+            });
+        });
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+}
